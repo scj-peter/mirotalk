@@ -9,7 +9,6 @@
     --navbar-bg: rgba(0, 0, 0, 0.2);
     --body-bg: radial-gradient(#393939, #000000);
     --border: 0.5px solid rgb(255 255 255 / 32%);
-    --dd-color: #ffffff;
 
     --msger-top: 50%;
     --msger-left: 50%;
@@ -17,8 +16,6 @@
     --msger-width: 420px;
     --msger-bubble-width: 85%;
 
-    --caption-top: 50%;
-    --caption-left: 50%;
     --caption-height: 680px;
     --caption-width: 420px;
 
@@ -348,6 +345,10 @@ body {
     z-index: 14;
     display: none;
     position: fixed;
+    /* center screen */
+    top: var(--caption-top);
+    left: var(--caption-left);
+    transform: translate(-50%, -50%);
     /* end center screen  */
     height: var(--caption-height);
     width: var(--caption-width);
@@ -360,7 +361,6 @@ body {
     overflow: hidden;
     border-radius: 10px;
     box-shadow: var(--box-shadow);
-    transition: width 0.5s ease-in-out;
 }
 
 .caption {
@@ -379,6 +379,8 @@ body {
     background: rgba(0, 0, 0, 0.2);
     color: #666;
     cursor: move;
+    box-sizing: border-box;
+    width: 100%;
 }
 
 .caption-header-title button,
@@ -386,7 +388,7 @@ body {
     padding: 5px;
     /* border: var(--border); */
     border: none;
-    font-size: 1rem;
+    font-size: 1.1rem;
     background: transparent;
     color: #fff;
     border-radius: 5px;
@@ -399,12 +401,26 @@ body {
     background: var(--body-bg);
 }
 
-.caption-chat {
+.caption-chatarea {
     flex: 1;
-    overflow-y: auto;
+    display: flex;
+    width: 100%;
+    position: relative;
+}
+
+.caption-chat {
+/*    flex: 1;*/
+    overflow-y: scroll;
     padding: 10px;
     background: transparent;
-    max-width: 95%;
+    width: 95%;
+    max-height: 100%;
+    position: absolute;
+    bottom: 0;
+}
+
+.caption-chat[style*='30'] {
+    mask-image: linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%);
 }
 
 .caption-chat::-webkit-scrollbar {
@@ -434,8 +450,8 @@ body {
 }
 
 .left-msg .msg-caption-bubble {
-    background: var(--left-msg-bg);
-    border-bottom-left-radius: 0;
+/*    background: var(--left-msg-bg);*/
+/*    border-bottom-left-radius: 0;*/
     color: #fff;
     width: var(--msger-bubble-width);
 }
@@ -467,6 +483,10 @@ body {
     z-index: 14;
     display: none;
     position: fixed;
+    /* center screen */
+    top: var(--msger-top);
+    left: var(--msger-left);
+    transform: translate(-50%, -50%);
     /* end center screen  */
     height: var(--msger-height);
     width: var(--msger-width);
@@ -479,7 +499,6 @@ body {
     overflow: hidden;
     border-radius: 10px;
     box-shadow: var(--box-shadow);
-    transition: width 0.5s ease-in-out;
 }
 
 .msger {
@@ -517,7 +536,7 @@ body {
     padding: 5px;
     /* border: var(--border); */
     border: none;
-    font-size: 1rem;
+    font-size: 1.1rem;
     background: transparent;
     color: #fff;
     border-radius: 5px;
@@ -562,9 +581,9 @@ body {
 
 .msg {
     display: flex;
-    align-items: flex-end;
+/*    align-items: flex-end;*/
     font-size: 0.8rem;
-    margin-bottom: 10px;
+/*    margin-bottom: 10px;*/
 }
 
 .msg:last-of-type {
@@ -588,7 +607,7 @@ body {
 }
 
 .left-msg .msg-img {
-    margin: 0px 5px 5px 0px;
+    margin: 5px 5px 5px 0px;
 }
 
 /* right side */
@@ -618,8 +637,8 @@ body {
 /* common */
 
 .msg-img {
-    width: 50px;
-    height: 50px;
+    width: 35px;
+    height: 35px;
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
@@ -641,15 +660,15 @@ body {
 }
 
 .msg-caption-bubble {
-    padding: 15px;
-    border-radius: 15px;
+    padding: 5px;
+/*    border-radius: 15px;*/
 }
 
 .msg-info {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
 }
 
 .msg-info-name {
@@ -667,6 +686,7 @@ body {
     overflow-wrap: break-word;
     word-wrap: break-word;
     hyphens: auto;
+    font-size: 0.8rem;
 }
 
 .msg-text button {
@@ -790,7 +810,7 @@ button:hover {
 #msgerCP {
     z-index: 12;
     display: none;
-    position: absolute;
+    position: fixed;
     width: 100%;
     height: 100%;
     cursor: default;
@@ -857,11 +877,10 @@ button:hover {
     position: absolute;
     bottom: 105px;
     left: 10px;
-    background: var(--body-bg);
     border: var(--border);
     border-radius: 5px;
-    --rgb-background: var(--body-bg) !important;
-    --color-border-over: var(--body-bg) !important;
+    --rgb-background: var(--body-bg);
+    --color-border-over: var(--body-bg);
     --font-family: 'Comfortaa';
 }
 
@@ -1873,11 +1892,11 @@ hr {
 
 /* Styles for the dropdown button */
 .dropdown-toggle {
-    /* padding: 10px 20px; */
+    background-color: var(--body-bg);
     color: #fff;
     border: none;
     border-radius: 5px;
-    background-color: var(--body-bg);
+    /* padding: 10px 20px; */
     cursor: pointer;
 }
 
@@ -1890,59 +1909,6 @@ hr {
     border-radius: 10px;
     background-color: var(--body-bg);
     box-shadow: var(--box-shadow);
-}
-
-/*--------------------------------------------------------------
-# Dropdown menu custom
---------------------------------------------------------------*/
-
-/* General container for the dropdown */
-.dropdown-custom {
-    position: relative;
-    display: inline-block;
-}
-
-/* Style the button that triggers the dropdown */
-.dropdown-toggle-custom {
-    color: #fff;
-    border: var(--border);
-    background: var(--body-bg);
-    cursor: pointer;
-}
-
-/* Dropdown menu */
-.dropdown-menu-custom {
-    z-index: 1;
-    display: none;
-    position: absolute;
-    right: 0;
-    padding: 10px 0;
-    min-width: 240px;
-    border-radius: 5px;
-    border: var(--border);
-    background: var(--body-bg);
-    box-shadow: var(--box-shadow);
-}
-
-/* Style for dropdown items */
-.dropdown-menu-custom li {
-    padding: 8px 16px;
-    list-style-type: none;
-}
-
-.dropdown-menu-custom li button {
-    border: none;
-    background: none;
-    width: 100%;
-    text-align: left;
-    padding: 8px 16px;
-    font-size: 0.8em;
-    cursor: pointer;
-    color: #fff;
-}
-
-.dropdown-menu-custom li button:hover {
-    background-color: var(--hover-bg); /* Use a default hover color if --hover-bg is not defined */
 }
 
 /* Styles for table cell with title (td) */
