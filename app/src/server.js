@@ -47,6 +47,7 @@ dependencies: {
 
 require('dotenv').config();
 
+const googleSpeechServer = require('./googleSpeechServer');
 const { auth, requiresAuth } = require('express-openid-connect');
 const { Server } = require('socket.io');
 const http = require('http');
@@ -919,6 +920,12 @@ server.listen(port, null, () => {
     } else {
         log.info('Server config', getServerConfig());
     }
+});
+
+googleSpeechServer.listen(1337, null, function () {
+    //http listen, to make socket work
+    // app.address = "127.0.0.1";
+    // console.log('Server started on port:' + port);
 });
 
 /**

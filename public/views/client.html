@@ -64,6 +64,13 @@
         <!-- JavaScripts -->
 
         <script async src="../js/umami.js"></script>
+
+        <!-- Nlp -->
+        <script src="https://unpkg.com/compromise@11.14.3/builds/compromise.min.js"></script>
+
+        <!-- Socket -->
+        <script src="../js/socket.io.js"></script>
+
     </head>
 
     <body>
@@ -272,6 +279,12 @@ access to use this app.
                     <select id="recognitionDialect"></select>
                     <button id="speechRecognitionStart"><i class="fas fa-play"></i> Start</button>
                     <button id="speechRecognitionStop"><i class="fas fa-stop"></i> Stop</button>
+                    <button id="startRecButton" type="button"> Start GoogleAPI</button>
+                    <button id="stopRecButton" type="button"> Stop GoogleAPI</button>
+                    <div id="recordingStatus" style="display: none;">&nbsp;</div>
+                    <p id="ResultText" style="display: none;">
+                        <span class="greyText">No Speech to Text yet</span>
+                    </p>
                 </div>
             </section>
         </section>
