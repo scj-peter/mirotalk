@@ -5,8 +5,9 @@
 //  Feel free to improve!
 //	Contact: v@vinzenzaubry.com
 
+require('dotenv').config();
+
 const express = require('express'); // const bodyParser = require('body-parser'); // const path = require('path');
-const environmentVars = require('dotenv').config();
 const cors = require('cors');
 
 // Google Cloud
@@ -15,11 +16,49 @@ const speechClient = new speech.SpeechClient(); // Creates a client
 
 const app = express();
 // const port = 1337; // process.env.PORT || 1337
-const server = require('http').createServer(app);
+const http = require('http');
+const https = require('https');
+const fs = require('fs');
+const Logs = require("./logs");
+const log = new Logs('server');
+
+const path = require('path');
+const isHttps = process.env.HTTPS == 'true'; // Use self-signed certificates instead of Certbot and Let's Encrypt
+
+let server;
+
+if (isHttps) {
+    // Define paths to the SSL key and certificate files
+    const keyPath = path.join(__dirname, '../ssl/key.pem');
+    const certPath = path.join(__dirname, '../ssl/cert.pem');
+
+    // Check if SSL key file exists
+    if (!fs.existsSync(keyPath)) {
+        log.error('SSL key file not found.');
+        process.exit(1); // Exit the application if the key file is missing
+    }
+
+    // Check if SSL certificate file exists
+    if (!fs.existsSync(certPath)) {
+        log.error('SSL certificate file not found.');
+        process.exit(1); // Exit the application if the certificate file is missing
+    }
+
+    // Read SSL key and certificate files securely
+    const options = {
+        key: fs.readFileSync(keyPath, 'utf-8'),
+        cert: fs.readFileSync(certPath, 'utf-8'),
+    };
+
+    // Create HTTPS server using self-signed certificates
+    server = https.createServer(options, app);
+} else {
+    server = http.createServer(app);
+}
 
 const io = require('socket.io')(server, {
     cors: {
-        origin: "http://localhost:3000",
+        origin: '*',
         methods: ["GET", "POST"]
     }
 });
