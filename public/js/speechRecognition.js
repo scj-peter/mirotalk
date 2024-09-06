@@ -494,17 +494,21 @@ function addTimeSettingsFinal(speechData) {
         newSpan.innerHTML = word;
         newSpan.dataset.startTime = startTime;
 
-        //push all tags
-        for (let j = 0; j < nlpObject[i].tags.length; j++) {
-            tags.push(nlpObject[i].tags[j]);
-        }
+        try {
+            //push all tags
+            for (let j = 0; j < nlpObject[i].tags.length; j++) {
+                tags.push(nlpObject[i].tags[j]);
+            }
 
-        //add all classes
-        for (let j = 0; j < nlpObject[i].tags.length; j++) {
-            let cleanClassName = nlpObject[i].tags[j];
-            // console.log(tags);
-            let className = `nl-${cleanClassName}`;
-            newSpan.classList.add(className);
+            //add all classes
+            for (let j = 0; j < nlpObject[i].tags.length; j++) {
+                let cleanClassName = nlpObject[i].tags[j];
+                // console.log(tags);
+                let className = `nl-${cleanClassName}`;
+                newSpan.classList.add(className);
+            }
+        } catch (error) {
+            console.error('Error accessing tags:', error);
         }
 
         words_n_time.push(newSpan);
