@@ -322,6 +322,7 @@ function stopRecording() {
     endButton.disabled = true;
     recordingStatus.style.visibility = 'hidden';
     streamStreaming = false;
+    speechSocket.emit('speechData', undefined);
     speechSocket.emit('endGoogleCloudStream', '');
 
     let track = globalStream.getTracks()[0];
@@ -407,7 +408,7 @@ speechSocket.on('speechData', function (data) {
                 );
             }
         }
-        let transcript = editText;
+        let transcript = resultText.innerText;
         let recognitionLang = recognitionDialect.value;
         if (transcript && transcript.length > 0) {
             let config = {
@@ -426,9 +427,9 @@ speechSocket.on('speechData', function (data) {
             document.createTextNode('\u002E\u00A0')
         );
 
+        resultText.innerHTML = '';
         console.log("Google Speech sent 'final' Sentence.");
         finalWord = true;
-        endButton.disabled = false;
 
         removeLastSentence = false;
     }
@@ -469,7 +470,6 @@ function addTimeSettingsInterim(speechData) {
     }
 
     finalWord = false;
-    endButton.disabled = true;
 
     return words_without_time;
 }
