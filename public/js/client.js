@@ -1293,7 +1293,6 @@ function handleServerInfo(config) {
     }
 
     if (notify && peers_count == 1) {
-        shareRoomMeetingURL(true);
     } else {
         checkShareScreen();
     }
