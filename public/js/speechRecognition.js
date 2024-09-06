@@ -9,13 +9,13 @@ const langs = [
     ['Deutsch', ['de-DE']],
     [
         'English',
+        ['en-US', 'United States'],
         ['en-AU', 'Australia'],
         ['en-CA', 'Canada'],
         ['en-IN', 'India'],
         ['en-NZ', 'New Zealand'],
         ['en-ZA', 'South Africa'],
         ['en-GB', 'United Kingdom'],
-        ['en-US', 'United States'],
         ['en-NG', 'Nigeria'],
         ['en-GH', 'Ghana'],
         ['en-KE', 'Kenya'],
@@ -181,7 +181,6 @@ function handleRecognitionLanguages() {
     }
     recognitionLanguage.selectedIndex = 6;
     updateCountry();
-    recognitionDialect.selectedIndex = 6;
     recognitionLanguage.addEventListener('change', () => {
         updateCountry();
     });
