@@ -277,14 +277,12 @@ access to use this app.
                 <div class="caption-inputarea">
                     <select id="recognitionLanguage"></select>
                     <select id="recognitionDialect"></select>
-                    <button id="speechRecognitionStart"><i class="fas fa-play"></i> Start</button>
-                    <button id="speechRecognitionStop"><i class="fas fa-stop"></i> Stop</button>
-                    <button id="startRecButton" type="button"> Start GoogleAPI</button>
-                    <button id="stopRecButton" type="button"> Stop GoogleAPI</button>
-                    <div id="recordingStatus" style="display: none;">&nbsp;</div>
-                    <p id="ResultText" style="display: none;">
-                        <span class="greyText">No Speech to Text yet</span>
-                    </p>
+                    <button id="speechRecognitionStart" style="display: none;"><i class="fas fa-play"></i> Start</button>
+                    <button id="speechRecognitionStop" style="display: none;"><i class="fas fa-stop"></i> Stop</button>
+                    <button id="startRecButton" type="button" style="max-height: 40px;">🔴</button>
+                    <button id="stopRecButton" type="button" style="max-height: 40px;">⬛</button>
+                    <span id="recordingStatus" style="display: none;">&nbsp;</span>
+                    <p id="ResultText" style="color: #fff;"><span>&nbsp;</span></p>
                 </div>
             </section>
         </section>
