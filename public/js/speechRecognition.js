@@ -1,5 +1,11 @@
 'use strict';
 
+if (isMobileDevice) {
+    setTimeout(() => {
+        document.querySelector('#captionTheme').click();
+    }, 5000);
+}
+
 const langs = [
     ['Afrikaans', ['af-ZA']],
     ['Bahasa Indonesia', ['id-ID']],
