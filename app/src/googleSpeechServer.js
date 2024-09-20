@@ -93,9 +93,22 @@ const request = {
         languageCode: defaultLanguageCode,
         profanityFilter: false,
         enableWordTimeOffsets: true,
-        // speechContexts: [{
-        //     phrases: ["hoful","shwazil"]
-        //    }] // add your own speech context for better recognition
+        // enableAutomaticPunctuation: false,  // 자동 구두점 비활성화
+        speechContexts: [{
+            phrases: [
+                "New York",
+                "Seoul",
+                "Jeju Island",
+                "Gyeong ju",
+                "BTS",
+                "Blackpink",
+                "RM",
+                "Han bok",
+                "Bul go gi",
+                "Central Park",
+                "Statue of Liberty"
+            ]
+        }] // add your own speech context for better recognition
     },
     interimResults: true, // If you want interim results, set this to true
 };
@@ -152,11 +165,11 @@ io.on('connection', function (client) {
 
                 // if end of utterance, let's restart stream
                 // this is a small hack. After 65 seconds of silence, the stream will still throw an error for speech length limit
-                if (data.results[0] && data.results[0].isFinal) {
-                    stopRecognitionStream();
-                    startRecognitionStream(client);
+                // if (data.results[0] && data.results[0].isFinal) {
+                //     stopRecognitionStream();
+                //     startRecognitionStream(client);
                     // console.log('restarted stream serverside');
-                }
+                // }
             });
     }
 

@@ -307,11 +307,21 @@ var endButton = document.getElementById('stopRecButton');
 endButton.addEventListener('click', stopRecording);
 endButton.disabled = true;
 
+var discardButton = document.getElementById('discardButton');
+discardButton.addEventListener('click', discardRecording);
+discardButton.disabled = true;
+
+var sendButton = document.getElementById('sendButton');
+sendButton.addEventListener('click', sendRecording);
+sendButton.disabled = true;
+
 var recordingStatus = document.getElementById('recordingStatus');
 
 function startRecording() {
     startButton.disabled = true;
     endButton.disabled = false;
+    discardButton.disabled = false;
+    sendButton.disabled = false;
     recordingStatus.style.visibility = 'visible';
     initRecording();
 }
@@ -320,6 +330,8 @@ function stopRecording() {
     // waited for FinalWord
     startButton.disabled = false;
     endButton.disabled = true;
+    discardButton.disabled = true;
+    sendButton.disabled = true;
     recordingStatus.style.visibility = 'hidden';
     streamStreaming = false;
     speechSocket.emit('speechData', undefined);
@@ -349,7 +361,51 @@ function stopRecording() {
 
     // audiovideostream.stop();
     // videoElement.srcObject = null;
+
+    let transcript = resultText.innerText;
+    let recognitionLang = recognitionDialect.value;
+    if (transcript && transcript.length > 0) {
+        let config = {
+            type: 'speech',
+            room_id: roomId,
+            peer_name: myPeerName,
+            text_data: transcript,
+            time_stamp: new Date(),
+            recognition_lang: recognitionLang,
+        };
+        // save also my speech to text
+        handleSpeechTranscript(config);
+        // sendToDataChannel(config);
+    }
+    resultText.innerHTML = '<span></span>';
 }
+
+function discardRecording() {
+    resultText.innerHTML = '<span></span>';
+    speechSocket.emit('speechData', undefined);
+}
+
+function sendRecording() {
+    speechSocket.emit('speechData', undefined);
+    // speechSocket.emit('endGoogleCloudStream', '');
+    let transcript = resultText.innerText;
+    let recognitionLang = recognitionDialect.value;
+    if (transcript && transcript.length > 0) {
+        let config = {
+            type: 'speech',
+            room_id: roomId,
+            peer_name: myPeerName,
+            text_data: transcript,
+            time_stamp: new Date(),
+            recognition_lang: recognitionLang,
+        };
+        // save also my speech to text
+        handleSpeechTranscript(config);
+        // sendToDataChannel(config);
+    }
+    resultText.innerHTML = '<span></span>';
+}
+
 
 //================= SOCKET IO =================
 speechSocket.on('connect', function (data) {
@@ -420,14 +476,14 @@ speechSocket.on('speechData', function (data) {
                 recognition_lang: recognitionLang,
             };
             // save also my speech to text
-            handleSpeechTranscript(config);
+            // handleSpeechTranscript(config);
             sendToDataChannel(config);
         }
         resultText.lastElementChild.appendChild(
             document.createTextNode('\u002E\u00A0')
         );
 
-        resultText.innerHTML = '';
+        // resultText.innerHTML = '';
         console.log("Google Speech sent 'final' Sentence.");
         finalWord = true;
 
