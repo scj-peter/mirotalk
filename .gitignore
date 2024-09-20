@@ -21,3 +21,4 @@ docker-compose.yml
 output
 env.txt
 .idea
+service-account.json
