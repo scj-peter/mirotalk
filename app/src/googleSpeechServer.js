@@ -6,6 +6,7 @@
 //	Contact: v@vinzenzaubry.com
 
 require('dotenv').config();
+const googleTranslate = require('./googleTranslate');
 
 const express = require('express'); // const bodyParser = require('body-parser'); // const path = require('path');
 const cors = require('cors');
@@ -125,6 +126,15 @@ io.on('connection', function (client) {
 
     client.on('messages', function (data) {
         client.emit('broad', data);
+    });
+
+    client.on('translate', function (data) {
+        googleTranslate.translateText(
+            data, 
+            request.config.languageCode == 'ko-KR' ? 'en' : 'ko'
+        ).then(result => {
+            client.emit('translated', result);
+        });
     });
 
     client.on('setLanguageCode', function (data) {
