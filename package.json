@@ -61,7 +61,8 @@
         "swagger-ui-express": "^5.0.1",
         "uuid": "10.0.0",
         "xss": "^1.0.15",
-        "@google-cloud/speech": "^4.2.0"
+        "@google-cloud/speech": "^4.2.0",
+        "@google-cloud/translate": "8.5.0"
     },
     "devDependencies": {
         "node-fetch": "^3.3.2",
