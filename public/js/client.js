@@ -7354,6 +7354,9 @@ function handleSpeechTranscript(config) {
 
     const time_stamp = getFormatDate(new Date());
     const avatar_image = isValidEmail(peer_name) ? genGravatar(peer_name) : genAvatarSvg(peer_name, 32);
+    const translate_html = peer_name == myPeerName ? '' : `
+        <div class="msg-translate" data-text="${text_data}"></div>
+    `;
 
     if (!isCaptionBoxVisible) showCaptionDraggable();
 
@@ -7365,6 +7368,7 @@ function handleSpeechTranscript(config) {
                 <div class="msg-info-name">${peer_name} : ${time_stamp}</div>
             </div>
             <div class="msg-text">${text_data}</div>
+            ${translate_html}
         </div>
 	</div>
     `;

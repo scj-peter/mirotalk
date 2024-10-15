@@ -1,10 +1,22 @@
 'use strict';
 
-if (isMobileDevice) {
-    setTimeout(() => {
+setTimeout(() => {
+    if (isMobileDevice) {
         document.querySelector('#captionTheme').click();
-    }, 5000);
-}
+    }
+    setInterval(() => {
+        let ele_data_text = document.querySelector('.msg-translate[data-text]');
+        if (ele_data_text) {
+            let data_text = ele_data_text.getAttribute('data-text');
+            if (data_text) {
+                ele_data_text.removeAttribute('data-text');
+                speechSocket.emit('translate', data_text);
+            }
+        }
+    }, 1000);
+}, 5000);
+
+let resultTranslated = '';
 
 const langs = [
     ['Afrikaans', ['af-ZA']],
@@ -323,6 +335,7 @@ function startRecording() {
     discardButton.disabled = false;
     sendButton.disabled = false;
     recordingStatus.style.visibility = 'visible';
+    resultText.innerHTML = '<span></span>';
     initRecording();
 }
 
@@ -377,6 +390,7 @@ function stopRecording() {
         handleSpeechTranscript(config);
         // sendToDataChannel(config);
     }
+    resultTranslated = '';
     resultText.innerHTML = '<span></span>';
 }
 
@@ -415,6 +429,20 @@ speechSocket.on('connect', function (data) {
 
 speechSocket.on('messages', function (data) {
     console.log(data);
+});
+
+speechSocket.on('translated', function (data) {
+    // resultTranslated = data;
+    let translated_elements = document.querySelectorAll('.msg-translate');
+    for (let i = 0; i < translated_elements.length; i++) {
+        const e = translated_elements[i];
+        if (e.innerText == '') {
+            e.parentElement.querySelector('.msg-text').setAttribute('style', 'display:none;');
+            e.innerText = data;
+            break;
+        }
+    }
+    // console.log(data);
 });
 
 speechSocket.on('speechData', function (data) {
