@@ -3291,6 +3291,24 @@ async function loadRemoteMediaStream(stream, peers, peer_id, kind) {
             const remotePitchBar = document.createElement('div');
             const remoteAudioVolume = document.createElement('input');
 
+            // html caption on video
+            const remoteVideoCaptionWrap = document.createElement('div');
+            const remoteVideoCaption = document.createElement('span');
+
+            remoteVideoCaption.setAttribute('id', peer_id + '_videoCaption');
+            remoteVideoCaption.className = 'videoCaption';
+            remoteVideoCaption.style.color = '#000';
+            remoteVideoCaption.style.backgroundColor = 'rgba(255,255,255,0.5)';
+            remoteVideoCaption.style.padding = '5px 10px';
+            remoteVideoCaption.style.borderRadius = '10px';
+
+            // remoteVideoCaptionWrap.setAttribute('id', 'remoteVideoCaptionWrap');
+            remoteVideoCaptionWrap.setAttribute('style', 'position: absolute; z-index:1000; left:0; right:0; bottom:30px; padding: 10px; text-align:center;');
+            remoteVideoCaptionWrap.appendChild(remoteVideoCaption);
+
+            remoteVideoWrap.style.postion = 'relative';
+            remoteVideoWrap.appendChild(remoteVideoCaptionWrap);
+
             // Expand button UI/UX
             const remoteExpandBtnDiv = document.createElement('div');
             const remoteExpandBtn = document.createElement('button');
@@ -7349,13 +7367,14 @@ function handleSpeechTranscript(config) {
 
     config.text_data = filterXSS(config.text_data);
     config.peer_name = filterXSS(config.peer_name);
+    config.peer_id = filterXSS(config.peer_id);
 
-    const { peer_name, text_data } = config;
+    const { peer_name, peer_id, text_data } = config;
 
     const time_stamp = getFormatDate(new Date());
     const avatar_image = isValidEmail(peer_name) ? genGravatar(peer_name) : genAvatarSvg(peer_name, 32);
     const translate_html = peer_name == myPeerName ? '' : `
-        <div class="msg-translate" data-text="${text_data}"></div>
+        <div class="msg-translate" data-peer-id="${peer_id}" data-text="${text_data}"></div>
     `;
 
     if (!isCaptionBoxVisible) showCaptionDraggable();

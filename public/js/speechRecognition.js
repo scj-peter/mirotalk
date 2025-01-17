@@ -1,16 +1,25 @@
 'use strict';
 
+var isRecording = false;
+
 setTimeout(() => {
     if (isMobileDevice) {
         document.querySelector('#captionTheme').click();
+        document.querySelector('#captionMaxBtn').click();
     }
+    document.querySelector('#captionBtn').click();
     setInterval(() => {
-        let ele_data_text = document.querySelector('.msg-translate[data-text]');
-        if (ele_data_text) {
-            let data_text = ele_data_text.getAttribute('data-text');
-            if (data_text) {
-                ele_data_text.removeAttribute('data-text');
-                speechSocket.emit('translate', data_text);
+        let eleDataText = document.querySelector('.msg-translate[data-text]');
+        if (eleDataText) {
+            let dataText = eleDataText.getAttribute('data-text');
+            let dataPeerId = eleDataText.getAttribute('data-peer-id');
+            if (dataText) {
+                eleDataText.removeAttribute('data-text');
+                eleDataText.removeAttribute('data-peer-id');
+                speechSocket.emit('translate', JSON.stringify({
+                    peer_id: dataPeerId,
+                    text: dataText,
+                }));
             }
         }
     }, 1000);
@@ -129,6 +138,7 @@ if (speechRecognition) {
                 type: 'speech',
                 room_id: roomId,
                 peer_name: myPeerName,
+                peer_id: myPeerId,
                 text_data: transcript,
                 time_stamp: new Date(),
             };
@@ -319,105 +329,85 @@ var endButton = document.getElementById('stopRecButton');
 endButton.addEventListener('click', stopRecording);
 endButton.disabled = true;
 
-var discardButton = document.getElementById('discardButton');
-discardButton.addEventListener('click', discardRecording);
-discardButton.disabled = true;
-
-var sendButton = document.getElementById('sendButton');
-sendButton.addEventListener('click', sendRecording);
-sendButton.disabled = true;
-
 var recordingStatus = document.getElementById('recordingStatus');
 
 function startRecording() {
-    startButton.disabled = true;
-    endButton.disabled = false;
-    discardButton.disabled = false;
-    sendButton.disabled = false;
-    recordingStatus.style.visibility = 'visible';
-    resultText.innerHTML = '<span></span>';
-    initRecording();
+    if (!isRecording) {
+        isRecording = true;
+        startButton.disabled = true;
+        startButton.style.display = 'none';
+        endButton.disabled = false;
+        endButton.style.display = 'inline-block';
+        recordingStatus.style.visibility = 'visible';
+        resultText.innerHTML = '<span></span>';
+        initRecording();
+    }
 }
 
 function stopRecording() {
-    // waited for FinalWord
-    startButton.disabled = false;
-    endButton.disabled = true;
-    discardButton.disabled = true;
-    sendButton.disabled = true;
-    recordingStatus.style.visibility = 'hidden';
-    streamStreaming = false;
-    speechSocket.emit('speechData', undefined);
-    speechSocket.emit('endGoogleCloudStream', '');
-
-    let track = globalStream.getTracks()[0];
-    track.stop();
-
-    input.disconnect(processor);
-    processor.disconnect(context.destination);
-    context.close().then(function () {
-        input = null;
-        processor = null;
-        context = null;
-        AudioContext = null;
+    if (isRecording) {
+        isRecording = false;
+        // waited for FinalWord
         startButton.disabled = false;
-    });
+        startButton.style.display = 'inline-block';
+        endButton.disabled = true;
+        endButton.style.display = 'none';
+        recordingStatus.style.visibility = 'hidden';
+        streamStreaming = false;
+        speechSocket.emit('speechData', undefined);
+        speechSocket.emit('endGoogleCloudStream', '');
 
-    // context.close();
+        let transcript = resultText.innerText;
+        let recognitionLang = recognitionDialect.value;
 
-    // audiovideostream.stop();
+        resultTranslated = '';
+        setTimeout(()=>{
+            resultText.innerHTML = '<span></span>';
+        }, 2000);
 
-    // microphone_stream.disconnect(script_processor_node);
-    // script_processor_node.disconnect(audioContext.destination);
-    // microphone_stream = null;
-    // script_processor_node = null;
 
-    // audiovideostream.stop();
-    // videoElement.srcObject = null;
+        if (transcript && transcript.length > 0) {
+            let config = {
+                type: 'speech',
+                room_id: roomId,
+                peer_name: myPeerName,
+                peer_id: myPeerId,
+                text_data: transcript,
+                time_stamp: new Date(),
+                recognition_lang: recognitionLang,
+            };
+            // save also my speech to text
+            handleSpeechTranscript(config);
+            sendToDataChannel(config);
+        }
 
-    let transcript = resultText.innerText;
-    let recognitionLang = recognitionDialect.value;
-    if (transcript && transcript.length > 0) {
-        let config = {
-            type: 'speech',
-            room_id: roomId,
-            peer_name: myPeerName,
-            text_data: transcript,
-            time_stamp: new Date(),
-            recognition_lang: recognitionLang,
-        };
-        // save also my speech to text
-        handleSpeechTranscript(config);
-        // sendToDataChannel(config);
+
+        let track = globalStream.getTracks()[0];
+        track.stop();
+
+        input.disconnect(processor);
+        processor.disconnect(context.destination);
+        context.close().then(function () {
+            input = null;
+            processor = null;
+            context = null;
+            AudioContext = null;
+        });
+
+
+        // context.close();
+
+        // audiovideostream.stop();
+
+        // microphone_stream.disconnect(script_processor_node);
+        // script_processor_node.disconnect(audioContext.destination);
+        // microphone_stream = null;
+        // script_processor_node = null;
+
+        // audiovideostream.stop();
+        // videoElement.srcObject = null;
     }
-    resultTranslated = '';
-    resultText.innerHTML = '<span></span>';
-}
 
-function discardRecording() {
-    resultText.innerHTML = '<span></span>';
-    speechSocket.emit('speechData', undefined);
-}
-
-function sendRecording() {
-    speechSocket.emit('speechData', undefined);
-    // speechSocket.emit('endGoogleCloudStream', '');
-    let transcript = resultText.innerText;
-    let recognitionLang = recognitionDialect.value;
-    if (transcript && transcript.length > 0) {
-        let config = {
-            type: 'speech',
-            room_id: roomId,
-            peer_name: myPeerName,
-            text_data: transcript,
-            time_stamp: new Date(),
-            recognition_lang: recognitionLang,
-        };
-        // save also my speech to text
-        handleSpeechTranscript(config);
-        // sendToDataChannel(config);
-    }
-    resultText.innerHTML = '<span></span>';
 }
 
 
@@ -433,15 +423,18 @@ speechSocket.on('messages', function (data) {
 
 speechSocket.on('translated', function (data) {
     // resultTranslated = data;
+    const {text, peer_id} = typeof data == 'object' ? data : JSON.parse(data);
     let translated_elements = document.querySelectorAll('.msg-translate');
     for (let i = 0; i < translated_elements.length; i++) {
         const e = translated_elements[i];
         if (e.innerText == '') {
             e.parentElement.querySelector('.msg-text').setAttribute('style', 'display:none;');
-            e.innerText = data;
+            e.innerText = text;
             break;
         }
     }
+    const remoteVideoCaption = document.getElementById(peer_id + '_videoCaption');
+    remoteVideoCaption.innerText = text;
     // console.log(data);
 });
 
@@ -494,24 +487,28 @@ speechSocket.on('speechData', function (data) {
         }
         let transcript = resultText.innerText;
         let recognitionLang = recognitionDialect.value;
+        setTimeout(stopRecording, 0);
+        /*
         if (transcript && transcript.length > 0) {
+            stopRecording();
             let config = {
                 type: 'speech',
                 room_id: roomId,
                 peer_name: myPeerName,
+                peer_id: myPeerId,
                 text_data: transcript,
                 time_stamp: new Date(),
                 recognition_lang: recognitionLang,
             };
             // save also my speech to text
-            // handleSpeechTranscript(config);
+            handleSpeechTranscript(config);
             sendToDataChannel(config);
         }
+         */
         resultText.lastElementChild.appendChild(
             document.createTextNode('\u002E\u00A0')
         );
 
-        // resultText.innerHTML = '';
         console.log("Google Speech sent 'final' Sentence.");
         finalWord = true;
 

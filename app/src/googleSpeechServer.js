@@ -129,11 +129,15 @@ io.on('connection', function (client) {
     });
 
     client.on('translate', function (data) {
+        const {text, peer_id} = JSON.parse(data);
         googleTranslate.translateText(
-            data, 
-            request.config.languageCode == 'ko-KR' ? 'en' : 'ko'
+            text,
+            request.config.languageCode == 'ko-KR' ? 'es' : 'ko'
         ).then(result => {
-            client.emit('translated', result);
+            client.emit('translated', {
+                peer_id: peer_id,
+                text: result,
+            });
         });
     });
 
