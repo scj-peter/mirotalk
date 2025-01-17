@@ -28,12 +28,6 @@ setTimeout(() => {
 let resultTranslated = '';
 
 const langs = [
-    ['Afrikaans', ['af-ZA']],
-    ['Bahasa Indonesia', ['id-ID']],
-    ['Bahasa Melayu', ['ms-MY']],
-    ['Català', ['ca-ES']],
-    ['Čeština', ['cs-CZ']],
-    ['Deutsch', ['de-DE']],
     [
         'English',
         ['en-US', 'United States'],
@@ -47,11 +41,12 @@ const langs = [
         ['en-GH', 'Ghana'],
         ['en-KE', 'Kenya'],
     ],
+    ['한국어', ['ko-KR']],
     [
         'Español',
+        ['es-CL', 'Chile'],
         ['es-AR', 'Argentina'],
         ['es-BO', 'Bolivia'],
-        ['es-CL', 'Chile'],
         ['es-CO', 'Colombia'],
         ['es-CR', 'Costa Rica'],
         ['es-EC', 'Ecuador'],
@@ -70,6 +65,12 @@ const langs = [
         ['es-UY', 'Uruguay'],
         ['es-VE', 'Venezuela'],
     ],
+    ['Afrikaans', ['af-ZA']],
+    ['Bahasa Indonesia', ['id-ID']],
+    ['Bahasa Melayu', ['ms-MY']],
+    ['Català', ['ca-ES']],
+    ['Čeština', ['cs-CZ']],
+    ['Deutsch', ['de-DE']],
     ['Euskara', ['eu-ES']],
     ['Français', ['fr-FR']],
     ['Galego', ['gl-ES']],
@@ -90,7 +91,6 @@ const langs = [
     ['български', ['bg-BG']],
     ['Pусский', ['ru-RU']],
     ['Српски', ['sr-RS']],
-    ['한국어', ['ko-KR']],
     [
         '中文',
         ['cmn-Hans-CN', '普通话 (中国大陆)'],
@@ -207,7 +207,7 @@ function handleRecognitionLanguages() {
     for (let i = 0; i < langs.length; i++) {
         recognitionLanguage.options[i] = new Option(langs[i][0], i);
     }
-    recognitionLanguage.selectedIndex = 6;
+    recognitionLanguage.selectedIndex = 2;
     updateCountry();
     recognitionLanguage.addEventListener('change', () => {
         updateCountry();

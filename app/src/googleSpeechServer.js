@@ -86,7 +86,7 @@ app.use('/', function (req, res, next) {
 // The BCP-47 language code to use, e.g. 'en-US'
 const encoding = 'LINEAR16';
 const sampleRateHertz = 16000;
-const defaultLanguageCode = 'ko-KR'; //en-US
+const defaultLanguageCode = 'es-CL'; //en-US ko-KR
 const request = {
     config: {
         encoding: encoding,
